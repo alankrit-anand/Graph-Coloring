@@ -116,27 +116,7 @@ int GraphColoring :: RLF :: find_suitable_node(int col_num, int &vertices_in_com
 }
 
 
-/*int MaxDegreeInNN()
-{
-    int tmp_y; // the vertex has the current maximum degree
-    int temp, max = 0;
-    for (int i=0; i < NNCount; i++)
-    {
-        temp = 0;
-        for (int j=0; j < n; j++)
-            if (color[j] == 0 && a[NN[i]][j] == 1)
-                temp ++;
-        if (temp>max) // if the degree of vertex NN[i] is higher than tmp_y's one
-        {
-            max = temp; // assignment NN[i] to tmp_y
-            tmp_y = NN[i];
-        }
-    }
-    if (max == 0) // so all the vertices have degree 0
-        return NN[0];
-    else // exist a maximum, return it
-        return tmp_y;
-}*/
+
 
 
 

@@ -17,6 +17,7 @@ namespace GraphColoring
 
 			// colors the graph
             void color_graph();
+            void sudoku_color();
 
 			// returns name of the algorithm
 			string get_algorithm() { return "DSATUR"; }

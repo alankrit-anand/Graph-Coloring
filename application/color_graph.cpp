@@ -13,31 +13,72 @@ using GraphColoring :: Dsatur;
 using GraphColoring :: RLF;
 using GraphColoring :: Greedy;
 
-mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
-uniform_int_distribution<int> rng(0, 1e9);
-
-
 
 
 int main()
 {
-	int n, p, e = 0, flag = 0;
+	int n, e, flag = 0;
 
 	cout << "Number of nodes in the graph: ";
 	cin >> n;
+
 
 	do
 	{
 		if(flag)
 		{
-			cout << "P must be between 0 and 100" << endl;
+			cout << "Number of edges must be between 0 and " << n * (n - 1) / 2 << endl;
 		}
 
-		cout << "P (2 nodes will be connected with probabilty P%): ";
-		cin >> p;
+		cout << "Number of edges in the graph: ";
+		cin >> e;
 		flag = 1;
 	}
-	while(p < 0 || p > 100);
+	while(e < 0 && e > n * (n - 1) / 2);
+
+
+	vector<vector<int>> g(n);
+	set<pair<int, int>> edges_added;
+
+	for(int i = 1; i <= e; i++)
+	{
+		int u, v;
+		flag = 0;
+
+		do
+		{
+			if(flag)
+			{
+				cout << "Edge already added" << endl;
+			}
+
+			bool flag1 = 0;
+
+			do
+			{	
+				if(flag1)
+				{
+					cout << "Nodes must be between 0 and " << n - 1 << endl;
+				}
+
+				cout << "Edge " << i << ": ";
+				cin >> u >> v;
+				flag1 = 1;
+			}
+			while(u < 0 || u > n - 1 || v < 0 || v > n - 1);
+
+			flag = 1;
+		}
+		while(edges_added.count({u, v}));
+		
+		edges_added.insert({u, v});
+		edges_added.insert({v, u});
+
+		g[u].push_back(v);
+		g[v].push_back(u);
+
+	}
+
 
 	
 	int choice;
@@ -47,7 +88,7 @@ int main()
 	{
 		if(flag)
 		{
-			cout << "Choice must be between 1 and 5" << endl;
+			cout << "Choice must be between 1 and 3" << endl;
 		}
 
 		cout << "Choose the Coloring algorithm" << endl;
@@ -58,25 +99,6 @@ int main()
 	}
 	while(choice < 1 || choice > 5);
 
-
-	// generate graph with n nodes and p % probabilty of edge between two nodes
-
-	vector<vector<int>> g(n);
-
-	for(int u = 0; u < n; u++)
-	{
-		for(int v = u + 1; v < n; v++)
-		{
-			int x = rng(mt) % 100;
-
-			if(x < p)
-			{
-				g[u].push_back(v);
-				g[v].push_back(u);
-				e += 2;
-			}
-		}
-	}
 
 	vector<int> color;
 	int num_of_colors;
@@ -114,7 +136,7 @@ int main()
 	    int total_iteration = 0;
 
 
-		GA GA_Solution(n_individuals, n, e, g);
+		GA GA_Solution(n_individuals, n, 2 * e, g);
 	    GA_Solution.MainLoop(max_iterations, total_iteration, p_best, p_cross, p_mutation, min_colors);
 
 	    Individual fittest_individual = GA_Solution.population[0];
@@ -132,7 +154,7 @@ int main()
         int min_colors = 0;
         int total_iteration = 0;
 
-        SA SA_solution(initial_temp, n, e, g);
+        SA SA_solution(initial_temp, n, 2 * e, g);
         SA_solution.MainLoop(max_iterations, min_temp, total_iteration, min_colors);
 
 
@@ -146,7 +168,7 @@ int main()
 
 	// generate python code
 
-	freopen("coloring_simulation.py", "w", stdout);
+	freopen("color_graph.py", "w", stdout);
 
 	cout << "import networkx as nx\nimport matplotlib.pyplot as plt\nimport warnings\nwarnings.filterwarnings(\"ignore\", category=UserWarning)\nfig = plt.figure(1, figsize = (30, 30))\nG = nx.Graph()\npos = nx.circular_layout(G)" << endl;
 
